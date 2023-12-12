@@ -36,6 +36,12 @@ type CycleState interface {
 	Delete(key string)
 }
 
+// PreFilterExtensions is a WebAssembly implementation of framework.PreFilterExtensions.
+type PreFilterExtensions interface {
+	AddPod(state CycleState, podToSchedule proto.Pod, podInfoToAdd PodInfo, nodeInfo NodeInfo) *Status
+	RemovePod(state CycleState, podToSchedule proto.Pod, podInfoToAdd PodInfo, nodeInfo NodeInfo) *Status
+}
+
 // Plugin is a WebAssembly implementation of framework.Plugin.
 type Plugin interface {
 	// This doesn't define `Name() string`. See /RATIONALE.md for impact
@@ -154,4 +160,13 @@ type NodeScore interface {
 	// Map returns a map
 	// which is keyed by the node name and valued by the score.
 	Map() map[string]int
+}
+
+// PodInfo contains information about a pod.
+type PodInfo struct {
+	Pod                        proto.Pod
+	RequiredAffinityTerms      []proto.AffinityTerm
+	RequiredAntiAffinityTerms  []proto.AffinityTerm
+	PreferredAffinityTerms     []proto.WeightedAffinityTerm
+	PreferredAntiAffinityTerms []proto.WeightedAffinityTerm
 }

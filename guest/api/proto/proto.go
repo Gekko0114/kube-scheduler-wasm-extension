@@ -17,7 +17,11 @@
 // Package proto includes any types derived from Kubernetes protobuf messages.
 package proto
 
-import api "sigs.k8s.io/kube-scheduler-wasm-extension/kubernetes/proto/api"
+import (
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/util/sets"
+	api "sigs.k8s.io/kube-scheduler-wasm-extension/kubernetes/proto/api"
+)
 
 // Metadata are fields on top-level types, used for logging and metrics.
 type Metadata interface {
@@ -42,4 +46,16 @@ type Pod interface {
 
 	Spec() *api.PodSpec
 	Status() *api.PodStatus
+}
+
+type AffinityTerm struct {
+	Namespaces        sets.Set[string]
+	Selector          labels.Selector
+	TopologyKey       string
+	NamespaceSelector labels.Selector
+}
+
+type WeightedAffinityTerm struct {
+	AffinityTerm
+	Weight int32
 }
